@@ -46,12 +46,6 @@ class Chromosome {
             }
             return ret;
         }
-        void print (){
-            for(int i=0; i<this->size; i++){
-                cout << this->genes[i];
-            }
-            cout << endl; 
-        }
 
         friend ostream& operator<<(ostream& os, const Chromosome& c);
         friend int operator -(Chromosome& a, const Chromosome& b);
@@ -136,7 +130,6 @@ class Mutation {
         static void typical(Chromosome & c, int max_gen, double start_time){
             double mutation_param = 0.05;
             double p = mutation_param*pow(M_E, -((clock()-start_time)/CLOCKS_PER_SEC)/(max_gen/5));
-            // cout << p <<endl;
             for(int i=0; i<c.size; i++){
                 double _s = double_rand();
                 if(p>_s){
@@ -323,20 +316,7 @@ class Replace {
 };
 
 
-
-int main(){
-    srand((unsigned int)time(NULL));
-    start_time = clock();
-    int v, e;
-    cin >> v>> e;
-    vector<pair<pair<int, int>, int> > edge;
-
-    for(int i=0; i<e; i++){
-        int v1, v2, w;
-        cin >> v1 >> v2 >> w;
-        edge.push_back(make_pair(make_pair(v1-1, v2-1), w)); // translate to 0 based index
-    }
-
+void solve(int v, vector<pair<pair<int, int>, int> >& edge, ofstream & outputfile){
     //Generate initial solutions
     int population_size = 16;
     vector<Chromosome> c_set; //current population
@@ -350,7 +330,6 @@ int main(){
         
         vector<Chromosome> next_gen;
         int num_next_gen = (population_size/2)*pow(M_E, -tick/40)+(population_size/2);
-        // int num_next_gen = 10;
         
         int init_tour_val = 1;
         int init_tour_k;
@@ -397,12 +376,12 @@ int main(){
         int max_fit = c_set[0].fitness(edge);
         
         max_fit = c_set[0].fitness(edge);
-        cout << num_next_gen <<" " << tick << " -fit: " << max_fit << endl;
+        outputfile << num_next_gen <<" " << tick << " -fit: " << max_fit << endl;
         for(int i=0; i<5; i++){
-            cout << c_set[i].fitness(edge) <<" " << c_set[i] << endl;
+            outputfile << c_set[i].fitness(edge) <<" " << c_set[i] << endl;
         }
         for(int i=c_set.size()-5; i<c_set.size(); i++){
-            cout << c_set[i].fitness(edge) <<" " << c_set[i]<< endl;
+            outputfile << c_set[i].fitness(edge) <<" " << c_set[i]<< endl;
         }
     }while((clock()-start_time)/CLOCKS_PER_SEC < 180);
 
@@ -414,6 +393,38 @@ int main(){
             max_fit_idx = i;
         }
     }
-    // cout << max_fit_idx <<endl;
-    cout << "answer: " << c_set[max_fit_idx] <<" -fit: "<< c_set[max_fit_idx].fitness(edge) << endl;
+    outputfile << "answer: " << c_set[max_fit_idx] <<" -fit: "<< c_set[max_fit_idx].fitness(edge) << endl;
+}
+
+int main(){
+    srand((unsigned int)time(NULL));
+    string instances[4] = {"proj1_instances/unweighted_100.txt", "proj1_instances/unweighted_500.txt", "proj1_instances/weighted_500.txt", "proj1_instances/weighted_chimera_297.txt"};
+    string output[4] = {"test2_o/", "test3_o/", "test4_o/", "test5_o/"};
+    for(int test=0; test<4; test++){
+        start_time = clock();
+        ifstream myfile (instances[test]);
+        if (myfile.is_open()){
+            int v, e;
+            myfile >> v>> e;
+            vector<pair<pair<int, int>, int> > edge;
+
+            for(int i=0; i<e; i++){
+                int v1, v2, w;
+                myfile >> v1 >> v2 >> w;
+                edge.push_back(make_pair(make_pair(v1-1, v2-1), w)); // translate to 0 based index
+            }
+            for(int iter=0; iter<30; iter++){
+                ofstream myoutput (output[test]+"o"+to_string(iter)+".txt");
+                if(myoutput.is_open()){
+                    cout<<iter<<endl;
+                    solve(v, edge, myoutput);
+                }
+                myoutput.close();
+            }
+        }
+        myfile.close();
+        
+    }
+    
+    
 }
