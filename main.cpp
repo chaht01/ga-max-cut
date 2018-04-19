@@ -129,14 +129,11 @@ class Crossover {
             return Chromosome(genes);
         }
 
-        static Chromosome multi_point(const Chromosome& c1, const Chromosome& c2){
-
-        }
 };
 
 class Mutation {
     public:
-        static void non_uniform(Chromosome & c, int max_gen, double start_time){
+        static void typical(Chromosome & c, int max_gen, double start_time){
             double mutation_param = 0.05;
             double p = mutation_param*pow(M_E, -((clock()-start_time)/CLOCKS_PER_SEC)/(max_gen/5));
             // cout << p <<endl;
@@ -363,10 +360,6 @@ int main(){
             int select_pressure = 3;
             pair<int, int> parent = Selection::Roulette(select_pressure, c_set, edge, false);
             
-            /* tournament selection */
-            // init_tour_k = (-pow(M_E, -tick*(log(2)/log(c_set.size()))/10)+1)*(log((int)c_set.size())/log(2)-init_tour_val)+init_tour_val;
-            // pair<int, int> parent = Selection::Tournament(init_tour_k, c_set, edge);
-            
             if(parent.first==-1 || parent.second==-1) break;
             while(c_set[parent.first]-c_set[parent.second]<=2){ // performance key point #1
                 parent = Selection::Roulette(select_pressure, c_set, edge, false);
@@ -374,10 +367,9 @@ int main(){
             parents.push_back(parent);
             
             Chromosome crossovered =  Crossover::one_point(c_set[parent.first], c_set[parent.second]);
-            Mutation::non_uniform(crossovered, 180, start_time);
+            Mutation::typical(crossovered, 180, start_time);
             next_gen.push_back(crossovered);
             
-            // cout << "solution: " << crossovered << " -fit: " << crossovered.fitness(edge) << endl;
         }
         if((int)next_gen.size()==0){
             break;
@@ -404,37 +396,19 @@ int main(){
         
         int max_fit = c_set[0].fitness(edge);
         
-        /*
-        int max_equal_cnt = 1;
-        for(int i=1; i<c_set.size(); i++){
-            if(c_set[i].fitness(edge)==max_fit){
-                max_equal_cnt++;
-            }
-        }
-        if(max_equal_cnt>=c_set.size()/2){
-            int exception = rand()%max_equal_cnt;
-            for(int i=0; i<c_set.size(); i++){
-                if(i==exception)continue;
-                c_set[i] = Chromosome(v);
-            }   
-        }else{
-            cout << max_equal_cnt<<" " << c_set.size()/4 <<endl;
-        }
-        */
         max_fit = c_set[0].fitness(edge);
         cout << num_next_gen <<" " << tick << " -fit: " << max_fit << endl;
         for(int i=0; i<5; i++){
-            cout << "tour" << init_tour_k<<":"<< c_set[i].fitness(edge) <<" " << c_set[i] << endl;
+            cout << c_set[i].fitness(edge) <<" " << c_set[i] << endl;
         }
         for(int i=c_set.size()-5; i<c_set.size(); i++){
-            cout << "tour" << init_tour_k<<":"<< c_set[i].fitness(edge) <<" " << c_set[i]<< endl;
+            cout << c_set[i].fitness(edge) <<" " << c_set[i]<< endl;
         }
     }while((clock()-start_time)/CLOCKS_PER_SEC < 180);
 
     int max_fit = -1;
     int max_fit_idx = -1;
     for(int i=0; i<c_set.size(); i++){
-        // cout << "fit: " <<i <<" " << c_set[i] << endl;
         if(max_fit==-1 || c_set[i].fitness(edge) > max_fit){
             max_fit = c_set[i].fitness(edge);
             max_fit_idx = i;
