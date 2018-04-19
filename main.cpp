@@ -377,12 +377,12 @@ void solve(int v, vector<pair<pair<int, int>, int> >& edge, ofstream & outputfil
         
         max_fit = c_set[0].fitness(edge);
         outputfile << num_next_gen <<" " << tick << " -fit: " << max_fit << endl;
-        for(int i=0; i<5; i++){
-            outputfile << c_set[i].fitness(edge) <<" " << c_set[i] << endl;
-        }
-        for(int i=c_set.size()-5; i<c_set.size(); i++){
-            outputfile << c_set[i].fitness(edge) <<" " << c_set[i]<< endl;
-        }
+        // for(int i=0; i<5; i++){
+        //     outputfile << c_set[i].fitness(edge) <<" " << c_set[i] << endl;
+        // }
+        // for(int i=c_set.size()-5; i<c_set.size(); i++){
+        //     outputfile << c_set[i].fitness(edge) <<" " << c_set[i]<< endl;
+        // }
     }while((clock()-start_time)/CLOCKS_PER_SEC < 180);
 
     int max_fit = -1;
@@ -401,7 +401,6 @@ int main(){
     string instances[4] = {"proj1_instances/unweighted_100.txt", "proj1_instances/unweighted_500.txt", "proj1_instances/weighted_500.txt", "proj1_instances/weighted_chimera_297.txt"};
     string output[4] = {"test2_o/", "test3_o/", "test4_o/", "test5_o/"};
     for(int test=0; test<4; test++){
-        start_time = clock();
         ifstream myfile (instances[test]);
         if (myfile.is_open()){
             int v, e;
@@ -414,6 +413,7 @@ int main(){
                 edge.push_back(make_pair(make_pair(v1-1, v2-1), w)); // translate to 0 based index
             }
             for(int iter=0; iter<30; iter++){
+                start_time = clock();
                 ofstream myoutput (output[test]+"o"+to_string(iter)+".txt");
                 if(myoutput.is_open()){
                     cout<<iter<<endl;
