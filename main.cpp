@@ -397,13 +397,6 @@ int main(){
         int max_fit = c_set[0].fitness(edge);
         
         max_fit = c_set[0].fitness(edge);
-        cout << num_next_gen <<" " << tick << " -fit: " << max_fit << endl;
-        for(int i=0; i<5; i++){
-            cout << c_set[i].fitness(edge) <<" " << c_set[i] << endl;
-        }
-        for(int i=c_set.size()-5; i<c_set.size(); i++){
-            cout << c_set[i].fitness(edge) <<" " << c_set[i]<< endl;
-        }
     }while((clock()-start_time)/CLOCKS_PER_SEC < 180);
 
     int max_fit = -1;
@@ -415,5 +408,10 @@ int main(){
         }
     }
     
-    cout << "answer: " << c_set[max_fit_idx] <<" -fit: "<< c_set[max_fit_idx].fitness(edge) << endl;
+    for(int i=0; i<c_set[max_fit_idx].size; i++){
+        if(c_set[max_fit_idx][i]==0){
+            cout << i+1 << " ";
+        }
+    }
+    cout << endl;
 }
