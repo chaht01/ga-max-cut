@@ -350,7 +350,7 @@ int main(){
         
         vector<Chromosome> next_gen;
         int num_next_gen = (population_size/2)*pow(M_E, -tick/40)+(population_size/2);
-        // int num_next_gen = 10;
+
         
         int init_tour_val = 1;
         int init_tour_k;
@@ -414,6 +414,6 @@ int main(){
             max_fit_idx = i;
         }
     }
-    // cout << max_fit_idx <<endl;
+    
     cout << "answer: " << c_set[max_fit_idx] <<" -fit: "<< c_set[max_fit_idx].fitness(edge) << endl;
 }
